@@ -1,6 +1,6 @@
 import logging
-from datetime import datetime
 import configparser
+import rhasspy_datetime
 
 from rhasspyhermes.nlu import NluIntent
 from rhasspyhermes_app import EndSession, HermesApp
@@ -23,11 +23,19 @@ app = HermesApp(client, host=server, port=port, username=user, password=password
 @app.on_intent("GetTime")
 async def get_time(intent: NluIntent):
     """Tell the time."""
-    hours = datetime.now().hour
-    minutes = datetime.now().minute
-    if minutes == 0:
-        return EndSession(f"Es ist {hours} Uhr.")
-    return EndSession(f"Es ist {hours} Uhr {minutes}.")
+    return EndSession(rhasspy_datetime.get_time(config_path=config["rhasspy_datetime"]["config"]))
+
+
+@app.on_intent("GetDate")
+async def get_date(intent: NluIntent):
+    """Tell the date."""
+    return EndSession(rhasspy_datetime.get_date(config_path=config["rhasspy_datetime"]["config"]))
+
+
+@app.on_intent("GetWeekday")
+async def get_date(intent: NluIntent):
+    """Tell the weekday."""
+    return EndSession(rhasspy_datetime.get_weekday(config_path=config["rhasspy_datetime"]["config"]))
 
 
 @app.on_intent("GetWeatherForecast")
